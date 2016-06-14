@@ -32,11 +32,11 @@ public class RegisterAction extends ActionSupport {
 
 	@Action(value = "register")
 	public String execute() {
-		userlogindata = new UserLoginData(dc.getID(registername), registername, firstname, surname, password, UserType.PATIENT);
+		userlogindata = new UserLoginData(dc.getID(registername), registername, firstname, surname, password, UserType.PATIENT, mail);
 //		Logindaten in Session ablegen
 		ActionContext.getContext().getSession().put("userlogindata", userlogindata);
 //		User in Datenbank speichern
-		dc.insertUser(registername, password, surname, firstname);
+		dc.insertUser(registername, password, surname, firstname, mail);
 		
 		return SUCCESS;
 	}

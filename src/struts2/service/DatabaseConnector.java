@@ -42,36 +42,37 @@ public class DatabaseConnector
 	public boolean createUserTable()
 	{
 		String sql = "CREATE TABLE BENUTZER " +
-			"(ID	INT		 PRIMARY KEY  AUTOINCREMENT NOT NULL," +
-			" LOGIN CHAR(15) PRIMARY KEY  NOT NULL," +
+			"(ID	INTEGER	 PRIMARY KEY AUTOINCREMENT NOT NULL," +
+			" LOGIN CHAR(15) NOT NULL UNIQUE," +
 			" PASSWORT		 TEXT     NOT NULL, " + 
 			" NAME			 TEXT     NOT NULL, " + 
-			" VORNAME		 TEXT     NOT NULL, " + 
-			" TYP			 INT	  NOT NULL)";
+			" VORNAME		 TEXT     NOT NULL, " +
+			" MAIL   		 TEXT     NOT NULL, " + 
+			" TYP			 INT      NOT NULL)";
 		return this.executeStatement(sql);
 	 }
 
 	public boolean createDocTypeTable()
 	{
 		String sql = "CREATE TABLE DOCTORS " +
-			"(ID	INT	PRIMARY KEY	NOT NULL," + 
-			"SPEZIALGEBIET	TEXT	NOT NULL)";
+			"(ID	INTEGER	PRIMARY KEY	NOT NULL," + 
+			"SPEZIALGEBIET	TEXT	NOT NULL UNIQUE)";
 		return this.executeStatement(sql);
 	}
 
-	public boolean insertUser(String login, String pw, String name, String vorname)
+	public boolean insertUser(String login, String pw, String name, String vorname, String mail)
 	{
-		return insertUser(login,pw,name,vorname,3);
+		return insertUser(login,pw,name,vorname,3,mail);
 	}
 
-	public boolean insertAdmin(String login, String pw, String name, String vorname)
+	public boolean insertAdmin(String login, String pw, String name, String vorname, String mail)
 	{
-		return insertUser(login,pw,name,vorname,1);
+		return insertUser(login,pw,name,vorname,1, mail);
 	}
 
-	public boolean insertDoc(String login, String pw, String name, String vorname, String spez)
+	public boolean insertDoc(String login, String pw, String name, String vorname, String spez, String mail)
 	{
-		boolean b = insertUser(login,pw,name,vorname,2);
+		boolean b = insertUser(login,pw,name,vorname,2, mail);
 		if(!b)	return false;
 		int userid = getID(login);
 		b = insertDoc(userid,spez);
@@ -89,16 +90,17 @@ public class DatabaseConnector
 		return this.executeStatement(sql);
 	}
 
-	public boolean insertUser(String login, String pw, String name, String vorname, int typ)
+	public boolean insertUser(String login, String pw, String name, String vorname, int typ, String mail)
 	{
 		
-		String sql = "INSERT INTO BENUTZER(LOGIN, PASSWORT, NAME, VORNAME, TYP)" +
+		String sql = "INSERT INTO BENUTZER(LOGIN, PASSWORT, NAME, VORNAME, TYP, MAIL)" +
 			"VALUES (" +
 				"'" + login + "'," + 
 				"'" + pw + "'," + 
 				"'" + name + "'," + 
 				"'" + vorname + "'," + 
-				"'" + typ + "')";
+				"'" + typ + "'," +
+				"'" + mail + "')";
 
 		return this.executeStatement(sql);
 	}
@@ -109,7 +111,6 @@ public class DatabaseConnector
 		      stmt = c.createStatement();
 		      stmt.executeUpdate(sql);
 		      stmt.close();
-		      c.close();
 		    } catch ( Exception e ) {
 		      System.err.println( e.getClass().getName() + ": " + e.getMessage() );
 		      return false;

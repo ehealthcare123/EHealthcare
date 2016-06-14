@@ -22,12 +22,13 @@
         <s:if test="%{#session.userlogindata != null && #session.userlogindata.usertype == @struts2.model.UserType@ADMIN}">
 	    <h1>Admin Operations</h1>
 	    <ul>
-	       <li><a href="#">Reset database</a></li>
-	       <li><a href="#">Add Doctor</a></li>
-	       <li><a href="#">Delete Doctor</a></li>
-	       <li><a href="#">Add Medical Category</a></li>
-	       <li><a href="#">Delete Medical Category</a></li>
+	       <li><a href="<s:url value="createTables.jsp"/>">Create Tables</a></li>
+	       <li><a href="<s:url value="adddoctor.jsp"/>">Add Doctor</a></li>
+	       <li><a href="<s:url value="deldoctor.jsp"/>">Delete Doctor</a></li>
+	       <li><a href="<s:url value="addcategory.jsp"/>">Add Medical Category</a></li>
+	       <li><a href="<s:url value="delcategory.jsp"/>">Delete Medical Category</a></li>
 	    </ul>
+	    <p><s:actionmessage/></p>
 	    </s:if>
 	    <s:else>
 	    	<p>Permission denied!</p>
@@ -38,6 +39,6 @@
 	<div class="clearer"><span></span></div>
   </div>
 </div>
-<div class="footer">&copy; 2016 <a href="#">E-Healthcare</a>. Valid <a href="http://jigsaw.w3.org/css-validator/check/referer">CSS</a> &amp; <a href="http://validator.w3.org/check?uri=referer">XHTML</a>. Template design by <a href="http://arcsin.se">Arcsin</a> </div>
+<jsp:include page="footer.jsp" />
 </body>
 </html>

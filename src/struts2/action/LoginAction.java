@@ -31,7 +31,7 @@ public class LoginAction extends ActionSupport {
 	 */
 	@Action(value = "login")
 	public String execute() {
-		ActionContext.getContext().getSession().put("userlogindata", new UserLoginData(1, loginname, "blub", "bla", password, UserType.ADMIN));
+		ActionContext.getContext().getSession().put("userlogindata", new UserLoginData(1, loginname, "blub", "bla", password, UserType.ADMIN, "blub@bla.com"));
 	    return "admin";			
 	}
 
