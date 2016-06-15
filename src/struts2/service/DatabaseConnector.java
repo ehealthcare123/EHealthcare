@@ -51,7 +51,7 @@ public class DatabaseConnector
 	public boolean createDocTypeTable()
 	{
 		String sql = "CREATE TABLE DOCTORS " +
-			"(ID	INTEGER	PRIMARY KEY	AUTOINCREMENT NOT NULL," + 
+			"(ID	INTEGER	PRIMARY KEY	NOT NULL," + 
 			"SPEZIALGEBIET	TEXT	NOT NULL UNIQUE)";
 		return this.executeStatement(sql);
 	}
@@ -155,6 +155,26 @@ public class DatabaseConnector
 			ResultSet rs = stmt.executeQuery("SELECT PASSWORT FROM BENUTZER WHERE ID="+id);
 			rs.next();
 			pw = rs.getString("passwort");
+			rs.close();
+			stmt.close();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		closeConnection();
+		return pw;
+	}
+	
+	public String getMail(int id)
+	{
+		if(!connectTosqlite())	return null;
+		Statement stmt;
+		String pw = "";
+		try {
+			stmt = c.createStatement();
+			ResultSet rs = stmt.executeQuery("SELECT MAIL FROM BENUTZER WHERE ID="+id);
+			rs.next();
+			pw = rs.getString("mail");
 			rs.close();
 			stmt.close();
 		} catch (SQLException e) {

@@ -19,13 +19,18 @@
   </div>
   <div class="main">
     <div class="content">
-      <s:if test="%{#session.userlogindata != null && #session.userlogindata.usertype == @struts2.model.UserType@PATIENT}">
-      <h1>Please choose a doctor you need:</h1>
-	  <s:form action="choosedoc" method="post">
-		 <s:select name="yourcategory" list="doccategory" value="defaultDoccategory" />
-		 <s:submit value="Go into the waiting room!" align="left"/>
-	  </s:form>
-	  </s:if>
+      <s:if test="%{#session.userlogindata != null}">
+      <h1>Edit your profile:</h1>
+        <s:form action="changeprof" method="post">
+	       <s:actionerror/>
+		   <s:password  name="password"  label="Password" size="20" />
+		   <s:password  name="password2" label="Reenter Password" size="20" />
+		   <s:textfield name="firstname" label="First Name" size="20" />
+		   <s:textfield name="surname"   label="Surname" size="20" />
+		   <s:textfield name="mail"      label="Your E-Mail Address" size="20" />
+		   <s:submit value="Change profile data" align="left" />
+	    </s:form>
+	  </s:if>	    
       <div class="clearer"><span></span></div>
     </div>
 	<jsp:include page="sidenavigator.jsp" />

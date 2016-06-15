@@ -19,6 +19,7 @@
   </div>
   <div class="main">
     <div class="content">
+    <s:if test="%{#session.userlogindata != null && #session.userlogindata.usertype == @struts2.model.UserType@ADMIN}">
       <h1>Add a new doctor to system:</h1>
         <s:form action="adddoctor" method="post">
 	       <s:actionerror/>
@@ -34,7 +35,9 @@
 						name="docspez" />
 		   <s:submit value="Submit" align="left" />
 	    </s:form>
+	    <p><a href="<s:url value="admin.jsp"/>">Back to menu.</a></p>
 	    <p><s:actionerror/></p>
+	    </s:if>
       <div class="clearer"><span></span></div>
     </div>
 	<jsp:include page="sidenavigator.jsp" />

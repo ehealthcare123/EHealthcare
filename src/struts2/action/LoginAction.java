@@ -10,6 +10,7 @@ import com.opensymphony.xwork2.validator.annotations.*;
 
 import struts2.model.UserLoginData;
 import struts2.model.UserType;
+import struts2.service.DatabaseConnector;
 
 @Results({ 
 	@Result(name = "patient",type="redirectAction" ,location = "prechoosedoc"), 
@@ -31,8 +32,17 @@ public class LoginAction extends ActionSupport {
 	 */
 	@Action(value = "login")
 	public String execute() {
-		ActionContext.getContext().getSession().put("userlogindata", new UserLoginData(1, loginname, "blub", "bla", password, UserType.ADMIN, "blub@bla.com"));
-	    return "admin";			
+//		ActionContext.getContext().getSession().put("userlogindata", new UserLoginData(1, loginname, "blub bla", password, UserType.ADMIN, "blub@bla.com"));
+		UserLoginData uld = (UserLoginData) ActionContext.getContext().getSession().get("userlogindata");
+		System.out.println(uld.getUsertype().toString());
+		if(uld != null){
+//			gebe Usertyp zurück und leite an nächste Maske weiter
+			return uld.getUsertype().toString().toLowerCase();						
+		}
+		else{
+			return "input";			
+		}
+		
 	}
 
 	@RequiredStringValidator(message = "Please enter a user name!")
@@ -57,13 +67,19 @@ public class LoginAction extends ActionSupport {
 	@Override
 	public void validate() {
 //		ask database for userid
-//		DatabaseConnector dc = new DatabaseConnector();
-//		Integer userid = dc.getID(this.getLoginname());
-		
+		DatabaseConnector dc = new DatabaseConnector();
+		Integer userid = dc.getID(this.getLoginname());
+
 //		Integer userid = 1;
 //		
-//		if (userid == 1){
-//			addActionError("Incorrect login data");
-//		}
+		if (userid == null || !dc.getPW(userid).equals(this.getPassword())){
+			addActionError("Incorrect login data");
+		}
+		else{
+			ActionContext.getContext().getSession().put(
+					"userlogindata", 
+					new UserLoginData(userid, loginname, dc.getName(userid), dc.getPW(userid), UserType.fromInt(dc.getTyp(userid)), dc.getMail(userid)));
+		System.out.println(UserType.fromInt(dc.getTyp(userid)));
+		}
 	}
 }

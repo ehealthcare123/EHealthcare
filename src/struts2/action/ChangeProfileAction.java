@@ -1,55 +1,62 @@
 package struts2.action;
 
-import java.util.ArrayList;
-
 import org.apache.struts2.convention.annotation.Action;
 import org.apache.struts2.convention.annotation.Result;
 import org.apache.struts2.convention.annotation.Results;
 
+import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.ActionSupport;
 import com.opensymphony.xwork2.validator.annotations.RegexFieldValidator;
 import com.opensymphony.xwork2.validator.annotations.RequiredStringValidator;
 
+import struts2.model.UserLoginData;
+import struts2.model.UserType;
+
 import struts2.service.DatabaseConnector;
 
-@Results({ @Result(name = "success", location = "/admin.jsp"), 
-	       @Result(name = "input", location = "/adddoctor.jsp") })
-public class AddDoctorAction extends ActionSupport {
+@Results({ @Result(name = "success", location = "/profile.jsp"), @Result(name = "input", location = "/profile.jsp") })
+public class ChangeProfileAction extends ActionSupport {
 	/**
-	 * 
-	 */
-	private static final long serialVersionUID = -7958005164064713106L;
-	
+	* 
+	*/
+	private static final long serialVersionUID = 224532928379636400L;
+
 	private String registername;
 	private String password;
 	private String password2;
 	private String firstname;
 	private String surname;
 	private String mail;
-	private String docspez;
+	private UserLoginData userlogindata;
+	private DatabaseConnector dc;
 
-	private ArrayList<String> listcategories;
-	private DatabaseConnector dc = new DatabaseConnector();
-
-	@Action(value = "adddoctor")
+	public ChangeProfileAction(){
+		userlogindata = (UserLoginData) ActionContext.getContext().getSession().get("userlogindata");
+		registername = userlogindata.getUsername();
+		password = userlogindata.getUserpassword();
+		password2 = userlogindata.getUserpassword();
+		firstname = userlogindata.getFullname().split(" ")[0];
+		surname = userlogindata.getFullname().split(" ")[1];
+		mail = userlogindata.getUsermail();
+		
+	}
+	
+	@Action(value = "changeprof")
 	public String execute() {
-//		Doc in Datenbank speichern
-		if(!dc.insertDoc(registername, password, surname, firstname, docspez ,mail)){
-			addActionError("Fehler bei SQL Insert Doctor!");
-			return INPUT;
-		}
+//		User in Datenbank ändern
+//		dc.updateUser(registername, password, surname, firstname, mail);
+		userlogindata = new UserLoginData(dc.getID(registername), registername, firstname + " " + surname, password, UserType.PATIENT, mail);
+//		Logindaten in Session ablegen
+		ActionContext.getContext().getSession().put("userlogindata", userlogindata);
+		
 		return SUCCESS;
 	}
-
-	@Action(value = "adddoctorin")
+	
+	@Action(value = "changeprofin")
 	public String display(){
-		return NONE;
+		return "input";
 	}
-	
-	public AddDoctorAction(){
-		setListcategories(dc.getDocCategories());
-	}
-	
+
 	@RequiredStringValidator(message = "Please enter a user name!")
 	@RegexFieldValidator(regex = "^[a-z0-9_-]{3,15}$", message = "This isn't a valid username! Use a-z, 0-9, underscore or hyphen and at least 3 characters and maximum length of 15")
 	public String getRegistername() {
@@ -72,19 +79,16 @@ public class AddDoctorAction extends ActionSupport {
 	@Override
 	public void validate() {
 //		Passwortvergleich
-		if (password != null && password2 != null && !password.equals(password2)) {
+		if (!password.equals(password2)) {
 			addFieldError("password2", "Passwords are different!");
 		}
 		
 //		gibt es den User schon?
-		if(this.getRegistername() != null && this.getRegistername() != "" && dc.getID(this.getRegistername()) != null){
-			addFieldError("registername", "Doctor already exists. Choose a different user name!");
+		dc = new DatabaseConnector();
+		if(dc.getID(this.getRegistername()) != null){
+			addFieldError("registername", "User already exists. Choose a different user name!");
 		}
 		
-//		
-		if(this.getDocspez() != null && this.getDocspez().equals("-1")){
-			addFieldError("docspez", "Choose a doctor category!");
-		}
 	}
 
 	@RequiredStringValidator(message = "Please reenter your password!")
@@ -124,21 +128,5 @@ public class AddDoctorAction extends ActionSupport {
 
 	public void setMail(String mail) {
 		this.mail = mail;
-	}
-
-	public ArrayList<String> getListcategories() {
-		return listcategories;
-	}
-
-	public void setListcategories(ArrayList<String> listcategories) {
-		this.listcategories = listcategories;
-	}
-	
-	public String getDocspez() {
-		return docspez;
-	}
-
-	public void setDocspez(String docspez) {
-		this.docspez = docspez;
 	}
 }

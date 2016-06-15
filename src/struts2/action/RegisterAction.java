@@ -14,7 +14,7 @@ import struts2.model.UserType;
 
 import struts2.service.DatabaseConnector;
 
-@Results({ @Result(name = "success", location = "/index.jsp"), @Result(name = "input", location = "/register.jsp") })
+@Results({ @Result(name = "success", location = "/docchooser.jsp"), @Result(name = "input", location = "/register.jsp") })
 public class RegisterAction extends ActionSupport {
 	/**
 	* 
@@ -32,11 +32,11 @@ public class RegisterAction extends ActionSupport {
 
 	@Action(value = "register")
 	public String execute() {
-		userlogindata = new UserLoginData(dc.getID(registername), registername, firstname, surname, password, UserType.PATIENT, mail);
-//		Logindaten in Session ablegen
-		ActionContext.getContext().getSession().put("userlogindata", userlogindata);
 //		User in Datenbank speichern
 		dc.insertUser(registername, password, surname, firstname, mail);
+		userlogindata = new UserLoginData(dc.getID(registername), registername, firstname + " " + surname, password, UserType.PATIENT, mail);
+//		Logindaten in Session ablegen
+		ActionContext.getContext().getSession().put("userlogindata", userlogindata);
 		
 		return SUCCESS;
 	}
@@ -72,7 +72,6 @@ public class RegisterAction extends ActionSupport {
 		if(dc.getID(this.getRegistername()) != null){
 			addFieldError("registername", "User already exists. Choose a different user name!");
 		}
-		
 		
 	}
 

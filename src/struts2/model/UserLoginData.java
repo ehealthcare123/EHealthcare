@@ -9,17 +9,15 @@ public class UserLoginData {
 
 	private int userid;
 	private String username;
-	private String firstname;
-	private String surname;
+	private String fullname;
 	private String userpassword;
 	private UserType usertype;
 	private String usermail;
 
-	public UserLoginData(int userid, String username, String firstname, String surname, String userpassword, UserType usertype, String usermail) {
+	public UserLoginData(int userid, String username, String fullname, String userpassword, UserType usertype, String usermail) {
 		this.setUserid(userid);
 		this.username = username;
-		this.firstname = firstname;
-		this.surname = surname;
+		this.fullname = fullname;
 		this.userpassword = userpassword;
 		this.usertype = usertype;
 		this.usermail = usermail;
@@ -57,20 +55,12 @@ public class UserLoginData {
 		this.userid = userid;
 	}
 
-	public String getFirstname() {
-		return firstname;
+	public String getFullname() {
+		return fullname;
 	}
 
-	public void setFirstname(String firstname) {
-		this.firstname = firstname;
-	}
-
-	public String getSurname() {
-		return surname;
-	}
-
-	public void setSurname(String surname) {
-		this.surname = surname;
+	public void setFullname(String fullname) {
+		this.fullname = fullname;
 	}
 
 	public String getUsermail() {
