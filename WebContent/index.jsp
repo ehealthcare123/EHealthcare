@@ -22,7 +22,7 @@
       <h1>Welcome to E-Healthcare</h1>
       <div class="descr">Jun 11, 2016 by SWP Team 9</div>
       <p>E-Healthcare is a web application in which patients are able to chat with a doctor.</p>
-      <cite>Maybe one of the best applications in the world! -Dr. Morph Ium</cite>
+      <cite>Maybe one of the best applications in the world! -Dr. Morph Ium
       <div class="clearer"><span></span></div>
     </div>
 	<jsp:include page="sidenavigator.jsp" />

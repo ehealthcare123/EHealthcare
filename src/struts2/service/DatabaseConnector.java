@@ -2,15 +2,11 @@ package struts2.service;
 
 import java.io.File;
 import java.sql.*;
+import java.util.ArrayList;
 
 public class DatabaseConnector
 {
 	private Connection c;
-
-	public DatabaseConnector()
-	{
-		c = null;
-	}
 
 	public boolean connectTosqlite(){
 		 try {
@@ -55,7 +51,7 @@ public class DatabaseConnector
 	public boolean createDocTypeTable()
 	{
 		String sql = "CREATE TABLE DOCTORS " +
-			"(ID	INTEGER	PRIMARY KEY	NOT NULL," + 
+			"(ID	INTEGER	PRIMARY KEY	AUTOINCREMENT NOT NULL," + 
 			"SPEZIALGEBIET	TEXT	NOT NULL UNIQUE)";
 		return this.executeStatement(sql);
 	}
@@ -106,11 +102,13 @@ public class DatabaseConnector
 	}
 
 	public boolean executeStatement(String sql){
+			if(!this.connectTosqlite())	return false;
 		    Statement stmt = null;
 		    try {
 		      stmt = c.createStatement();
 		      stmt.executeUpdate(sql);
 		      stmt.close();
+		      this.closeConnection();
 		    } catch ( Exception e ) {
 		      System.err.println( e.getClass().getName() + ": " + e.getMessage() );
 		      return false;
@@ -175,7 +173,7 @@ public class DatabaseConnector
 		Integer id = null;
 		try {
 			stmt = c.createStatement();
-			ResultSet rs = stmt.executeQuery("SELECT ID FROM BENUTZER WHERE LOGIN="+login);
+			ResultSet rs = stmt.executeQuery("SELECT ID FROM BENUTZER WHERE LOGIN='"+login+"'");
 			rs.next();
 			id = rs.getInt("id");
 			rs.close();
@@ -246,5 +244,26 @@ public class DatabaseConnector
 		}
 		closeConnection();
 		return spez;
+	}
+	
+	public ArrayList<String> getDocCategories()
+	{
+		if(!connectTosqlite())	return null;
+		Statement stmt;
+		ArrayList<String> categories = new ArrayList<String>();
+		try {
+			stmt = c.createStatement();
+			ResultSet rs = stmt.executeQuery("SELECT SPEZIALGEBIET FROM DOCTORS");
+			while(rs.next()){
+				categories.add(rs.getString("spezialgebiet"));
+			}
+			rs.close();
+			stmt.close();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		closeConnection();
+		return categories;
 	}
 }

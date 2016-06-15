@@ -27,9 +27,14 @@
 		   <s:password  name="password2" label="Reenter Password" size="20" />
 		   <s:textfield name="firstname" label="First Name" size="20" />
 		   <s:textfield name="surname"   label="Surname" size="20" />
-		   <s:textfield name="mail"      label="Your E-Mail Address" size="20" />
+		   <s:textfield name="mail"      label="E-Mail Address" size="20" />
+		   	<s:select 	label="Choose a doctor category" 
+						headerKey="-1" headerValue="Select Category"
+						list="listcategories" 
+						name="docspez" />
 		   <s:submit value="Submit" align="left" />
 	    </s:form>
+	    <p><s:actionerror/></p>
       <div class="clearer"><span></span></div>
     </div>
 	<jsp:include page="sidenavigator.jsp" />
