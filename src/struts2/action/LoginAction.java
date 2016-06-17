@@ -11,6 +11,7 @@ import com.opensymphony.xwork2.validator.annotations.*;
 import struts2.model.UserLoginData;
 import struts2.model.UserType;
 import struts2.service.DatabaseConnector;
+import struts2.service.SessionMapper;
 
 @Results({ 
 	@Result(name = "patient",type="redirectAction" ,location = "prechoosedoc"), 
@@ -34,13 +35,13 @@ public class LoginAction extends ActionSupport {
 	public String execute() {
 //		ActionContext.getContext().getSession().put("userlogindata", new UserLoginData(1, loginname, "blub bla", password, UserType.ADMIN, "blub@bla.com"));
 		UserLoginData uld = (UserLoginData) ActionContext.getContext().getSession().get("userlogindata");
-		System.out.println(uld.getUsertype().toString());
+		
 		if(uld != null){
 //			gebe Usertyp zurück und leite an nächste Maske weiter
 			return uld.getUsertype().toString().toLowerCase();						
 		}
 		else{
-			return "input";			
+			return "input";
 		}
 		
 	}
@@ -76,10 +77,12 @@ public class LoginAction extends ActionSupport {
 			addActionError("Incorrect login data");
 		}
 		else{
+			UserLoginData uld = new UserLoginData(userid, loginname, dc.getName(userid), dc.getPW(userid), UserType.fromInt(dc.getTyp(userid)), dc.getMail(userid));
 			ActionContext.getContext().getSession().put(
-					"userlogindata", 
-					new UserLoginData(userid, loginname, dc.getName(userid), dc.getPW(userid), UserType.fromInt(dc.getTyp(userid)), dc.getMail(userid)));
-		System.out.println(UserType.fromInt(dc.getTyp(userid)));
+					"userlogindata", uld);
+			ActionContext.getContext().getSession().put(
+					"strutssessionid", uld.hashCode());
+			SessionMapper.addSession(uld.hashCode(), uld);
 		}
 	}
 }

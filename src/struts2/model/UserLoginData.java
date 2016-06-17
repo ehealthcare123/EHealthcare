@@ -71,4 +71,52 @@ public class UserLoginData {
 		this.usermail = usermail;
 	}
 
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((fullname == null) ? 0 : fullname.hashCode());
+		result = prime * result + userid;
+		result = prime * result + ((usermail == null) ? 0 : usermail.hashCode());
+		result = prime * result + ((username == null) ? 0 : username.hashCode());
+		result = prime * result + ((userpassword == null) ? 0 : userpassword.hashCode());
+		result = prime * result + ((usertype == null) ? 0 : usertype.hashCode());
+		return result;
+	}
+	
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		UserLoginData other = (UserLoginData) obj;
+		if (fullname == null) {
+			if (other.fullname != null)
+				return false;
+		} else if (!fullname.equals(other.fullname))
+			return false;
+		if (userid != other.userid)
+			return false;
+		if (usermail == null) {
+			if (other.usermail != null)
+				return false;
+		} else if (!usermail.equals(other.usermail))
+			return false;
+		if (username == null) {
+			if (other.username != null)
+				return false;
+		} else if (!username.equals(other.username))
+			return false;
+		if (userpassword == null) {
+			if (other.userpassword != null)
+				return false;
+		} else if (!userpassword.equals(other.userpassword))
+			return false;
+		if (usertype != other.usertype)
+			return false;
+		return true;
+	}
 }

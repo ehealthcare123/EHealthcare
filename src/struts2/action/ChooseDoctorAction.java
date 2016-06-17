@@ -9,7 +9,7 @@ import org.apache.struts2.convention.annotation.Results;
 
 import com.opensymphony.xwork2.ActionSupport;
 
-@Results({ @Result(name = "success", location = "/waitingroom.jsp"),
+@Results({ @Result(name = "success", location = "/chat.jsp"),
 		@Result(name = "input", location = "/docchooser.jsp") })
 public class ChooseDoctorAction extends ActionSupport {
 
@@ -29,6 +29,7 @@ public class ChooseDoctorAction extends ActionSupport {
 	}
 
 	public ChooseDoctorAction() {
+//		TODO get the categories from database 
 		doccategory = new ArrayList<String>();
 		doccategory.add("general practitioner");
 		doccategory.add("ear, nose and throat specialist");
