@@ -7,6 +7,9 @@ import org.apache.struts2.convention.annotation.Results;
 import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.ActionSupport;
 
+import struts2.model.UserLoginData;
+import struts2.service.SessionMapper;
+
 @Results({ @Result(name = "success", location = "/index.jsp")
 	})
 public class LogoutAction extends ActionSupport {
@@ -18,7 +21,11 @@ public class LogoutAction extends ActionSupport {
 
 	@Action(value = "logout")
 	public String execute() {
-		ActionContext.getContext().getSession().remove("userlogindata");
+		UserLoginData uld = (UserLoginData) ActionContext.getContext().getSession().get("userlogindata");
+		if(uld != null){
+			SessionMapper.removeSession(uld.hashCode());
+			ActionContext.getContext().getSession().remove("userlogindata");			
+		}
 		return SUCCESS;			
 	}
 }

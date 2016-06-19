@@ -16,7 +16,7 @@ import struts2.service.SessionMapper;
 @Results({ 
 	@Result(name = "patient",type="redirectAction" ,location = "prechoosedoc"), 
 	@Result(name = "admin"  , location = "/admin.jsp"), 
-	@Result(name = "doctor" , location = "/doctor.jsp"),
+	@Result(name = "doctor" , location = "/index.jsp"),
 	@Result(name = "input"  , location = "/index.jsp")
 	})
 public class LoginAction extends ActionSupport {
@@ -83,6 +83,12 @@ public class LoginAction extends ActionSupport {
 			ActionContext.getContext().getSession().put(
 					"strutssessionid", uld.hashCode());
 			SessionMapper.addSession(uld.hashCode(), uld);
+			
+//			Beim Doktor die Kategorie in Session speichern
+			if(uld.getUsertype() == UserType.DOCTOR){
+				ActionContext.getContext().getSession().put(
+						"doctortype", dc.getDocSpez(userid));
+			}
 		}
 	}
 }

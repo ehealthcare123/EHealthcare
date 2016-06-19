@@ -19,22 +19,22 @@
   </div>
   <div class="main">
 	 <div class="content">
-	 		<div id="waitingElements"> 
-	 			Please wait a few moments.
-	 		</div>
-			<div id="chat"> <!-- Built by JS --> </div>
-		    <div id="chatControls">
-		        <input id="message" placeholder="Type your message">
-		        <button id="send">Send</button>
-		    </div>
-    		<div class="clearer"><span></span></div>
+	 	<s:if test="%{#session.userlogindata.usertype == @struts2.model.UserType@DOCTOR}">
+	 	
+		<p>In your category <b><s:property value="yourcategory" /></b> are waiting <s:property value="waitingpatients" /> patients.</p>
+		<s:if test="%{waitingpatients > 0}">
+			<s:form action="chatdoctor" method="post">
+		       <s:actionerror/>
+			   <s:submit value="Serve next patient" align="left" />
+		    </s:form>
+	    </s:if>
+    	<div class="clearer"><span></span></div>
+    	</s:if>
     </div>
 	<jsp:include page="sidenavigator.jsp" />
 	<div class="clearer"><span></span></div>
   </div>
 </div>
 <jsp:include page="footer.jsp" />
-<span id="sessionID" style="visibility:hidden"><s:property value="#session.strutssessionid" /></span>
-<script src="js/chatService.js"></script>
 </body>
 </html>

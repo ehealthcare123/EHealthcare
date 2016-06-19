@@ -1,8 +1,5 @@
 package struts2.action;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.apache.struts2.convention.annotation.Action;
 import org.apache.struts2.convention.annotation.Result;
 import org.apache.struts2.convention.annotation.Results;
@@ -12,35 +9,23 @@ import com.opensymphony.xwork2.ActionSupport;
 
 import struts2.model.UserLoginData;
 import struts2.service.CategoryMapper;
+import struts2.service.WaitingQueueCategory;
 
-@Results({ @Result(name = "success", location = "/chat.jsp"),
-		@Result(name = "input", location = "/docchooser.jsp") })
-public class ChooseDoctorAction extends ActionSupport {
+@Results({ 	@Result(name = "success", location = "/chat.jsp"),
+			@Result(name = "input", location = "/waitingroom.jsp") })
+public class WaitingRoomAction extends ActionSupport {
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = -4498264509300085094L;
-	private List<String> doccategory;
+
+	private Integer waitingpatients;
 	private String yourcategory;
 
-	public List<String> getDoccategory() {
-		return doccategory;
-	}
-
-	public void setDoccategory(List<String> doccategory) {
-		this.doccategory = doccategory;
-	}
-
-	public ChooseDoctorAction() {
-//		TODO get the categories from database 
-		doccategory = new ArrayList<String>();
-		doccategory.add("general practitioner");
-		doccategory.add("ear nose throat doctor");
-	}
-
-	public String getDefaultDoccategory() {
-		return doccategory.get(0);
+	public WaitingRoomAction() {
+		yourcategory = (String) ActionContext.getContext().getSession().get("doctortype");
+		setWaitingpatients(WaitingQueueCategory.getWaitingQueueSize(yourcategory));
 	}
 
 	public String getYourcategory() {
@@ -51,16 +36,25 @@ public class ChooseDoctorAction extends ActionSupport {
 		this.yourcategory = yourcategory;
 	}
 
-	@Action(value = "choosedoc")
+	public Integer getWaitingpatients() {
+		return waitingpatients;
+	}
+	
+	public void setWaitingpatients(Integer waitingpatients) {
+		this.waitingpatients = waitingpatients;
+	}
+	
+	@Action(value = "chatdoctor")
 	public String execute() {
 		UserLoginData uld = (UserLoginData) ActionContext.getContext().getSession().get("userlogindata");
 		CategoryMapper.addCategory(uld.hashCode(), yourcategory);
 		return SUCCESS;
 	}
 
-	@Action(value = "prechoosedoc")
+	@Action(value = "waitingroom")
 	public String display() {
 		return INPUT;
 	}
+
 
 }

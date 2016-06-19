@@ -4,7 +4,7 @@
 <s:if test="%{#session.userlogindata != null}">
 <a href="<s:url action="changeprofin"/>">My Profile</a> 
 <s:if test="%{#session.userlogindata.usertype == @struts2.model.UserType@DOCTOR}">
-<a href="#">Waiting Room</a> 
+<a href="<s:url action="waitingroom"/>">Look for patients</a> 
 </s:if>
 <s:if test="%{#session.userlogindata.usertype == @struts2.model.UserType@ADMIN}">
 <a href="<s:url value="admin.jsp"/>">Admin Operations</a>
