@@ -3,6 +3,8 @@
  */
 var webSocket = null;
 	
+var chatStarted = false;
+
 //Establish the WebSocket connection and set up event handlers
 connect(connectionWay() + location.hostname + ":" + location.port + "/EHealthcare/WSSchat/" + sessionID.innerHTML);
 
@@ -35,6 +37,11 @@ function showElement (element) {
 	element.style.display = 'block';          // Show
 }
 
+// activate chat elements
+function activateChatForClient() {
+	showElement(document.getElementById('waitingElements'));
+}
+
 //connect to a given target
 function connect(target) {
     if (target == '') {
@@ -56,6 +63,11 @@ function connect(target) {
     
     //what happens if you receive a message
     webSocket.onmessage = function (event) {
+    	if(chatStarted == false && event.data == "start") {
+    		
+    		chatStarted = true;
+    	}
+    	
     	updateChat(event);
     };
     

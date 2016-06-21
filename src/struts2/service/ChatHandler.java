@@ -36,7 +36,13 @@ public class ChatHandler {
 				ChatSessions.addChatClient(patientID,session);
 //				Patient wird aus der Warteschlange für die jeweilige Kategorie genommen
 				WaitingQueueCategory.removePatient(wantedCategory, patientSession);
-				
+//				Chat für Patient freischalten
+				try {
+					patientSession.getBasicRemote().sendText("startchat");
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 			}
 			else{
 				System.out.println("Some other user entered the chat room");
@@ -52,6 +58,7 @@ public class ChatHandler {
 		if(uld != null){
 			if(uld.getUsertype() == UserType.PATIENT){
 				String patientcategory = CategoryMapper.getCategory(sID);
+//				Patient wird aus der Warteschlange für die jeweilige Kategorie genommen				
 				WaitingQueueCategory.removePatient(patientcategory, session);
 				
 				System.out.println("patient "+session.toString()+" was removed from category '"+ patientcategory + "'");
