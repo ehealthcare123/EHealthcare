@@ -19,14 +19,12 @@
   </div>
   <div class="main">
 	 <div class="content">
-	 		<div id="waitingElements"> 
-	 			Please wait a few moments.
-	 		</div>
-			<div id="chat"> <!-- Built by JS --> </div>
-		    <div id="chatControls">
+	 		<div id="waitingElements">Please wait a few moments.</div>
+		    <div id="chatControls" style="display:none">
 		        <input id="message" placeholder="Type your message">
 		        <button id="send">Send</button>
 		    </div>
+			<div id="chat" style="display:none"> <!-- Built by JS --> </div>
     		<div class="clearer"><span></span></div>
     </div>
 	<jsp:include page="sidenavigator.jsp" />

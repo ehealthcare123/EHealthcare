@@ -2,8 +2,6 @@
  * This source handles the client communication with a Secure WebSocket
  */
 var webSocket = null;
-	
-var chatStarted = false;
 
 //Establish the WebSocket connection and set up event handlers
 connect(connectionWay() + location.hostname + ":" + location.port + "/EHealthcare/WSSchat/" + sessionID.innerHTML);
@@ -29,17 +27,29 @@ function connectionWay() {
     }
 }
 
-function hideElement (element) {
-	element.style.display = 'none';           // Hide
+function hideElement (elementStr) {
+	document.getElementById(elementStr).style.display = 'none';           // Hide
 }
 
-function showElement (element) {
-	element.style.display = 'block';          // Show
+function showElement (elementStr) {
+	document.getElementById(elementStr).style.display = 'block';          // Show
+}
+
+function disableElement (elementStr) {
+	document.getElementById(elementStr).disabled = true; 				  // Disable Element
 }
 
 // activate chat elements
 function activateChatForClient() {
-	showElement(document.getElementById('waitingElements'));
+	hideElement('waitingElements');
+	showElement('chat');
+	showElement('chatControls');
+}
+
+// deactivate chat
+function deactivateChatForClient() {
+	disableElement('message');
+	disableElement('send');	
 }
 
 //connect to a given target
@@ -63,12 +73,17 @@ function connect(target) {
     
     //what happens if you receive a message
     webSocket.onmessage = function (event) {
-    	if(chatStarted == false && event.data == "start") {
-    		
-    		chatStarted = true;
-    	}
+    	var data = JSON.parse(event.data);
     	
-    	updateChat(event);
+    	if(data.chatcommand == "startchat") {
+    		activateChatForClient();
+    	}
+    	else if(data.chatcommand == "endchat"){
+    		deactivateChatForClient();
+    	}
+    	else {
+    		updateChat(event);    		
+    	}
     };
     
     //what happens if you close your connection to WebSocket-Host
@@ -96,11 +111,7 @@ function sendMessage(message) {
 //Update the chat-panel, and the list of connected users
 function updateChat(msg) {
     var data = JSON.parse(msg.data);
-    insert("chat", data.userMessage);
-    id("userlist").innerHTML = "";
-    data.userlist.forEach(function (user) {
-        insert("userlist", "<li>" + user + "</li>");
-    });
+    insert("chat", data.usermessage);
 }
 
 //Helper function for inserting HTML as the first child of an element
