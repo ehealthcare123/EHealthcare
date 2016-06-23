@@ -10,7 +10,7 @@ import com.opensymphony.xwork2.ActionSupport;
 import com.opensymphony.xwork2.validator.annotations.RegexFieldValidator;
 import com.opensymphony.xwork2.validator.annotations.RequiredStringValidator;
 
-import struts2.service.DatabaseConnector;
+import struts2.service.DatabaseConnector2;
 
 @Results({ @Result(name = "success", location = "/admin.jsp"), 
 	       @Result(name = "input", location = "/adddoctor.jsp") })
@@ -29,7 +29,7 @@ public class AddDoctorAction extends ActionSupport {
 	private String docspez;
 
 	private ArrayList<String> listcategories;
-	private DatabaseConnector dc = new DatabaseConnector();
+	private DatabaseConnector2 dc = new DatabaseConnector2();
 
 	@Action(value = "adddoctor")
 	public String execute() {

@@ -88,7 +88,7 @@ function connect(target) {
     
     //what happens if you close your connection to WebSocket-Host
     webSocket.onclose = function (event) {
-    	
+    	disconnect();
     };
 }
 

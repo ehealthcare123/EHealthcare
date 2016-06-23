@@ -24,9 +24,7 @@
 	    <ul>
 	       <li><a href="<s:url value="createTables.jsp"/>">Create Tables</a></li>
 	       <li><a href="<s:url action="adddoctorin"/>">Add Doctor</a></li>
-	       <li><a href="<s:url value="deldoctor.jsp"/>">Delete Doctor</a></li>
 	       <li><a href="<s:url value="addcategory.jsp"/>">Add Medical Category</a></li>
-	       <li><a href="<s:url value="delcategory.jsp"/>">Delete Medical Category</a></li>
 	    </ul>
 	    <p><s:actionmessage/></p>
 	    </s:if>

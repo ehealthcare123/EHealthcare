@@ -6,7 +6,7 @@ import org.apache.struts2.convention.annotation.Results;
 
 import com.opensymphony.xwork2.ActionSupport;
 
-import struts2.service.DatabaseConnector;
+import struts2.service.DatabaseConnector2;
 
 @Results({ @Result(name = "success", location = "/admin.jsp"), @Result(name = "input", location = "/reset.jsp") })
 public class CreateTablesAction extends ActionSupport {
@@ -17,7 +17,7 @@ public class CreateTablesAction extends ActionSupport {
 	 */
 	private static final long serialVersionUID = 370148480803005023L;
 
-	private DatabaseConnector dc = new DatabaseConnector();
+	private DatabaseConnector2 dc = new DatabaseConnector2();
 
 	@Action(value = "createTables")
 	public String execute() {

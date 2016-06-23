@@ -12,9 +12,9 @@ import com.opensymphony.xwork2.validator.annotations.RequiredStringValidator;
 import struts2.model.UserLoginData;
 import struts2.model.UserType;
 
-import struts2.service.DatabaseConnector;
+import struts2.service.DatabaseConnector2;
 
-@Results({ @Result(name = "success", location = "/docchooser.jsp"), @Result(name = "input", location = "/register.jsp") })
+@Results({ @Result(name = "success", type = "redirectAction", location="prechoosedoc"), @Result(name = "input", location = "/register.jsp") })
 public class RegisterAction extends ActionSupport {
 	/**
 	* 
@@ -28,7 +28,7 @@ public class RegisterAction extends ActionSupport {
 	private String surname;
 	private String mail;
 	private UserLoginData userlogindata;
-	private DatabaseConnector dc;
+	private DatabaseConnector2 dc;
 
 	@Action(value = "register")
 	public String execute() {
@@ -68,7 +68,7 @@ public class RegisterAction extends ActionSupport {
 		}
 		
 //		gibt es den User schon?
-		dc = new DatabaseConnector();
+		dc = new DatabaseConnector2();
 		if(dc.getID(this.getRegistername()) != null){
 			addFieldError("registername", "User already exists. Choose a different user name!");
 		}

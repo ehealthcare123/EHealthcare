@@ -10,7 +10,7 @@ import com.opensymphony.xwork2.validator.annotations.*;
 
 import struts2.model.UserLoginData;
 import struts2.model.UserType;
-import struts2.service.DatabaseConnector;
+import struts2.service.DatabaseConnector2;
 import struts2.service.SessionMapper;
 
 @Results({ 
@@ -41,7 +41,7 @@ public class LoginAction extends ActionSupport {
 			return uld.getUsertype().toString().toLowerCase();						
 		}
 		else{
-			return "input";
+			return INPUT;
 		}
 		
 	}
@@ -68,7 +68,7 @@ public class LoginAction extends ActionSupport {
 	@Override
 	public void validate() {
 //		ask database for userid
-		DatabaseConnector dc = new DatabaseConnector();
+		DatabaseConnector2 dc = new DatabaseConnector2();
 		Integer userid = dc.getID(this.getLoginname());
 
 //		Integer userid = 1;

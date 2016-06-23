@@ -12,9 +12,9 @@ import com.opensymphony.xwork2.validator.annotations.RequiredStringValidator;
 import struts2.model.UserLoginData;
 import struts2.model.UserType;
 
-import struts2.service.DatabaseConnector;
+import struts2.service.DatabaseConnector2;
 
-@Results({ @Result(name = "success", location = "/profile.jsp"), @Result(name = "input", location = "/profile.jsp") })
+@Results({ @Result(name = "success",type="redirectAction" ,location = "changeprofin"), @Result(name = "input", location = "/profile.jsp") })
 public class ChangeProfileAction extends ActionSupport {
 	/**
 	* 
@@ -28,7 +28,7 @@ public class ChangeProfileAction extends ActionSupport {
 	private String surname;
 	private String mail;
 	private UserLoginData userlogindata;
-	private DatabaseConnector dc;
+	private DatabaseConnector2 dc;
 
 	public ChangeProfileAction(){
 		userlogindata = (UserLoginData) ActionContext.getContext().getSession().get("userlogindata");
@@ -41,10 +41,13 @@ public class ChangeProfileAction extends ActionSupport {
 		
 	}
 	
-	@Action(value = "changeprof")
+	@Action(value = "changeprofile")
 	public String execute() {
+		System.out.println("2");
 //		User in Datenbank ändern
-//		dc.updateUser(registername, password, surname, firstname, mail);
+		if(!dc.updateUser(dc.getID(registername), password, surname, firstname, mail)){
+			addActionError("SQL-Update failed!");
+		}
 		userlogindata = new UserLoginData(dc.getID(registername), registername, firstname + " " + surname, password, UserType.PATIENT, mail);
 //		Logindaten in Session ablegen
 		ActionContext.getContext().getSession().put("userlogindata", userlogindata);
@@ -54,7 +57,7 @@ public class ChangeProfileAction extends ActionSupport {
 	
 	@Action(value = "changeprofin")
 	public String display(){
-		return "input";
+		return INPUT;
 	}
 
 	@RequiredStringValidator(message = "Please enter a user name!")
@@ -84,11 +87,10 @@ public class ChangeProfileAction extends ActionSupport {
 		}
 		
 //		gibt es den User schon?
-		dc = new DatabaseConnector();
+		dc = new DatabaseConnector2();
 		if(dc.getID(this.getRegistername()) != null){
 			addFieldError("registername", "User already exists. Choose a different user name!");
 		}
-		
 	}
 
 	@RequiredStringValidator(message = "Please reenter your password!")

@@ -1,8 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
    pageEncoding="ISO-8859-1"%>
 <%@ taglib prefix="s" uri="/struts-tags"%>
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" 
-"http://www.w3.org/TR/html4/loose.dtd">
+<!DOCTYPE html>
 <html>
 <head>
 <title>E-Healthcare</title>
@@ -19,7 +18,7 @@
   </div>
   <div class="main">
 	 <div class="content">
-	 		<div id="waitingElements">Please wait a few moments.</div>
+	 		<div id="waitingElements">Please wait a few moments. A doctor will care for you soon.</div>
 		    <div id="chatControls" style="display:none">
 		        <input id="message" placeholder="Type your message">
 		        <button id="send">Send</button>

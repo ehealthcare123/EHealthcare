@@ -1,6 +1,5 @@
 package struts2.action;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.struts2.convention.annotation.Action;
@@ -12,6 +11,7 @@ import com.opensymphony.xwork2.ActionSupport;
 
 import struts2.model.UserLoginData;
 import struts2.service.CategoryMapper;
+import struts2.service.DatabaseConnector2;
 
 @Results({ @Result(name = "success", location = "/chat.jsp"),
 		@Result(name = "input", location = "/docchooser.jsp") })
@@ -34,9 +34,8 @@ public class ChooseDoctorAction extends ActionSupport {
 
 	public ChooseDoctorAction() {
 //		TODO get the categories from database 
-		doccategory = new ArrayList<String>();
-		doccategory.add("general practitioner");
-		doccategory.add("ear nose throat doctor");
+		DatabaseConnector2 dc = new DatabaseConnector2();
+		doccategory = dc.getDocCategories();
 	}
 
 	public String getDefaultDoccategory() {

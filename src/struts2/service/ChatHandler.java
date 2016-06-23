@@ -43,6 +43,8 @@ public class ChatHandler {
 				Session patientSession = WaitingQueueCategory.getNextPatient(wantedCategory);
 //				Session-ID des Patienten holen
 				Integer patientID = WaitingQueueCategory.getNextPatientID(wantedCategory);
+//				LoginData des Patienten holen
+				UserLoginData uldPatient = (UserLoginData) SessionMapper.getSession(patientID);
 				
 //				Doktor wird dem Patienten zugeordnet
 				ChatSessions.addChatClient(sID, patientSession);
@@ -63,6 +65,13 @@ public class ChatHandler {
 							.put("chatcommand", "startchat")));
 					patientSession.getBasicRemote().sendText(String.valueOf(new JSONObject()
 	                        .put("chatcommand", "startchat")));
+//					StartChat Message für Arzt
+	                session.getBasicRemote().sendText(String.valueOf(new JSONObject()
+	                        .put("usermessage", "You are now connected with patient <b>"+ uldPatient.getFullname() +"</b>")));
+//	                StartChat Message für Patient
+	                patientSession.getBasicRemote().sendText(String.valueOf(new JSONObject()
+	                		.put("usermessage", "You are now connected with doctor <b>"+ uld.getFullname() +"</b>")));
+	                
 					System.out.println("chat session started!");
 				} catch (JSONException | IOException e) {
 					// TODO Auto-generated catch block
@@ -83,6 +92,26 @@ public class ChatHandler {
 		if(uld != null){
 			if(uld.getUsertype() == UserType.PATIENT){
 				String patientcategory = CategoryMapper.getCategory(sID);
+//				Arzt aus ChatSession-Einträgen entfernen
+				Session doctorSession = ChatSessions.getChatClient(sID);
+				if(doctorSession.isOpen()){
+//					Doktor als Chatpartner entfernen
+					ChatSessions.removeChatClient(sID);
+//					Patienten über Ende des Chats informieren, Eingabe deaktivieren
+					try {
+						doctorSession.getBasicRemote().sendText(String.valueOf(new JSONObject()
+								.put("usermessage", "<br>The patient exited the chat.")));
+						doctorSession.getBasicRemote().sendText(String.valueOf(new JSONObject()
+								.put("chatcommand", "endchat")));
+					} catch (JSONException | IOException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				}
+//				Patient wird aus der Warteschlange für die jeweilige Kategorie genommen
+				if(ChatSessions.getChatClient(sID) == null){
+					WaitingQueueCategory.removePatient(patientcategory, session);					
+				}
 				
 				System.out.println("patient "+session.toString()+" was removed from category '"+ patientcategory + "'");
 			}
@@ -91,13 +120,15 @@ public class ChatHandler {
 //				Arzt aus ChatSession-Einträgen entfernen
 				Session patientSession = ChatSessions.getChatClient(sID);
 				ChatSessions.removeChatClient(sID);
-				try {
-	//				Patienten über Ende des Chats informieren, Eingabe deaktivieren
-					patientSession.getBasicRemote().sendText(String.valueOf(new JSONObject()
-					        .put("chatcommand", "endchat")));
-				} catch (JSONException | IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+				if(patientSession.isOpen()){
+					try {
+						//				Patienten über Ende des Chats informieren, Eingabe deaktivieren
+		                patientSession.getBasicRemote().sendText(String.valueOf(new JSONObject()
+		                		.put("usermessage", "<br>The doctor exited the chat.")));
+						patientSession.getBasicRemote().sendText(String.valueOf(new JSONObject()
+								.put("chatcommand", "endchat")));
+					} catch (JSONException | IOException e) {
+					}					
 				}
 				
 			}

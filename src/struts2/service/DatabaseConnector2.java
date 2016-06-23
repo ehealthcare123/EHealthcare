@@ -4,7 +4,7 @@ import java.io.File;
 import java.sql.*;
 import java.util.ArrayList;
 
-public class DatabaseConnector
+public class DatabaseConnector2
 {
 	private Connection c;
 
@@ -33,6 +33,21 @@ public class DatabaseConnector
 		}
 		return true;
 	}
+	
+	public boolean createDocTypeTable()
+	{
+		String sql = "CREATE TABLE TYPES " +
+				"(ID	INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL," +
+				" TYP	TEXT	NOT NULL UNIQUE)";
+		return this.executeStatement(sql);
+	}
+	
+	public boolean addDocType(String type)
+	{
+		String sql = "INSERT INTO TYPES(TYP) VALUES (" + type +")";
+		
+		return this.executeStatement(sql);
+	}
 
 
 	public boolean createUserTable()
@@ -44,60 +59,115 @@ public class DatabaseConnector
 			" NAME			 TEXT     NOT NULL, " + 
 			" VORNAME		 TEXT     NOT NULL, " +
 			" MAIL   		 TEXT     NOT NULL, " + 
-			" TYP			 INT      NOT NULL)";
+			" TYP			 INT      NOT NULL, " +
+			" SPEZIALGEBIET	 INTEGER)";
 		return this.executeStatement(sql);
 	 }
-
-	public boolean createDocTypeTable()
+	
+	public boolean dropUserTable()
 	{
-		String sql = "CREATE TABLE DOCTORS " +
-			"(ID	INTEGER	PRIMARY KEY	NOT NULL," + 
-			"SPEZIALGEBIET	TEXT	NOT NULL)";
+		String sql = "DROP TABLE BENUTZER";
+		
 		return this.executeStatement(sql);
 	}
+	
+	public boolean dropDocTypeTable()
+	{
+		String sql = "DROP TABLE TYPES";
+		
+		return this.executeStatement(sql);
+	}
+	
+	public boolean createAllTables()
+	{
+		if(!createUserTable())
+			return false;
+		if(!createDocTypeTable())
+		{
+			dropUserTable();
+			return false;
+		}
+		return true;
+	}
 
+	
+	//Hardcode, weil wir keine weiteren Typen brauchen werden!
+	public String getTypeString(int i)
+	{
+		switch(i)
+		{
+		case 0: {return "Admin";}
+		case 1: {return "Doctor";}
+		case 2: {return "Patient";}
+		default: {return null;}
+		}
+	}
+	
 	public boolean insertUser(String login, String pw, String name, String vorname, String mail)
 	{
-		return insertUser(login,pw,name,vorname,3,mail);
+		return insertUser(login,pw,name,vorname,3,mail,0);
 	}
 
 	public boolean insertAdmin(String login, String pw, String name, String vorname, String mail)
 	{
-		return insertUser(login,pw,name,vorname,1, mail);
+		return insertUser(login,pw,name,vorname,1, mail,0);
 	}
 
 	public boolean insertDoc(String login, String pw, String name, String vorname, String spez, String mail)
 	{
-		boolean b = insertUser(login,pw,name,vorname,2, mail);
-		if(!b)	return false;
-		int userid = getID(login);
-		b = insertDoc(userid,spez);
-		if(!b)	deleteUser(userid);
-		return b;
+		int s = getSpezNumber(spez);
+		if(s>0)
+			return insertUser(login,pw,name,vorname,2, mail,s);
+		return false;
+	}
+	
+	public Integer getSpezNumber(String s)
+	{
+		if(!connectTosqlite())	return 0;
+		Statement stmt;
+		int id = 0;
+		try {
+			stmt = c.createStatement();
+			ResultSet rs = stmt.executeQuery("SELECT ID FROM TYPES WHERE TYP='"+s+"'");
+			rs.next();
+			id = rs.getInt("id");
+			rs.close();
+			stmt.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return null;
+		}
+		closeConnection();
+		return id;
 	}
 
-	public boolean insertDoc(int id, String spez)
-	{
-		String sql = "INSERT INTO DOCTORS(ID, SPEZIALGEBIET)" +
-			"VALUES (" +
-				"'" + id + "'," +
-				"'" + spez + "')";
 
-		return this.executeStatement(sql);
-	}
-
-	public boolean insertUser(String login, String pw, String name, String vorname, int typ, String mail)
+	public boolean insertUser(String login, String pw, String name, String vorname, int typ, String mail, int spez)
 	{
-		
-		String sql = "INSERT INTO BENUTZER(LOGIN, PASSWORT, NAME, VORNAME, TYP, MAIL)" +
+		String sql = "";
+		if(spez>0)
+		{
+		    sql = "INSERT INTO BENUTZER(LOGIN, PASSWORT, NAME, VORNAME, TYP, MAIL, SPEZIALGEBIET)" +
 			"VALUES (" +
 				"'" + login + "'," + 
 				"'" + pw + "'," + 
 				"'" + name + "'," + 
 				"'" + vorname + "'," + 
 				"'" + typ + "'," +
-				"'" + mail + "')";
-
+				"'" + mail + "'," +
+				"'" + spez + "')";
+		}
+		else
+		{
+			sql = "INSERT INTO BENUTZER(LOGIN, PASSWORT, NAME, VORNAME, TYP, MAIL)" +
+					"VALUES (" +
+						"'" + login + "'," + 
+						"'" + pw + "'," + 
+						"'" + name + "'," + 
+						"'" + vorname + "'," + 
+						"'" + typ + "'," +
+						"'" + mail + "')";
+		}
 		return this.executeStatement(sql);
 	}
 
@@ -119,9 +189,8 @@ public class DatabaseConnector
 	public boolean deleteUser(int id)
 	{
 		String sql = "DELETE FROM BENUTZER WHERE ID="+id;
-		String sql2 = "DELETE FROM DOCTORS WHERE ID="+id;
 
-		return (this.executeStatement(sql2)||this.executeStatement(sql));
+		return this.executeStatement(sql);
 	}
 
 	public String getName(int id)
@@ -138,8 +207,8 @@ public class DatabaseConnector
 			rs.close();
 			stmt.close();
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
+			return null;
 		}
 		closeConnection();
 		return (vn + " " + n);
@@ -158,8 +227,8 @@ public class DatabaseConnector
 			rs.close();
 			stmt.close();
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
+			return null;
 		}
 		closeConnection();
 		return pw;
@@ -178,8 +247,8 @@ public class DatabaseConnector
 			rs.close();
 			stmt.close();
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
+			return null;
 		}
 		closeConnection();
 		return pw;
@@ -199,8 +268,8 @@ public class DatabaseConnector
 			rs.close();
 			stmt.close();
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
+			return null;
 		}
 		closeConnection();
 		return id;
@@ -219,8 +288,8 @@ public class DatabaseConnector
 			rs.close();
 			stmt.close();
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
+			return null;
 		}
 		closeConnection();
 		return typ;
@@ -239,8 +308,8 @@ public class DatabaseConnector
 			rs.close();
 			stmt.close();
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
+			return null;
 		}
 		closeConnection();
 		return login;
@@ -253,14 +322,14 @@ public class DatabaseConnector
 		String spez = "";
 		try {
 			stmt = c.createStatement();
-			ResultSet rs = stmt.executeQuery("SELECT SPEZIALGEBIET FROM DOCTORS WHERE ID="+id);
+			ResultSet rs = stmt.executeQuery("SELECT T.TYP FROM BENUTZER AS B INNER JOIN TYPES AS T ON B.SPEZIALGEBIET = T.ID WHERE B.ID="+id);
 			rs.next();
-			spez = rs.getString("spezialgebiet");
+			spez = rs.getString("typ");
 			rs.close();
 			stmt.close();
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
+			return null;
 		}
 		closeConnection();
 		return spez;
@@ -273,17 +342,24 @@ public class DatabaseConnector
 		ArrayList<String> categories = new ArrayList<String>();
 		try {
 			stmt = c.createStatement();
-			ResultSet rs = stmt.executeQuery("SELECT SPEZIALGEBIET FROM DOCTORS");
+			ResultSet rs = stmt.executeQuery("SELECT TYP FROM TYPES");
 			while(rs.next()){
-				categories.add(rs.getString("spezialgebiet"));
+				categories.add(rs.getString("typ"));
 			}
 			rs.close();
 			stmt.close();
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
+			return null;
 		}
 		closeConnection();
 		return categories;
+	}
+
+	public boolean updateUser(Integer id, String password, String surname, String firstname, String mail) {
+	    String sql = "UPDATE BENUTZER SET PASSWORT='"+ password +"', NAME='"+ surname +"', VORNAME='"+ firstname +"', MAIL='"+ mail +"' "+
+		             "WHERE ID="+id.toString();
+	    System.out.println("1");
+		return this.executeStatement(sql);
 	}
 }
