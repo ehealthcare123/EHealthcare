@@ -2,7 +2,7 @@
 <div class="navigation"> 
 <a href="index.jsp">Home</a>
 <s:if test="%{#session.userlogindata != null}">
-<a href="<s:url action="changeprofin"/>">My Profile</a> 
+<a href="profile.jsp">My Profile</a> 
 <s:if test="%{#session.userlogindata.usertype == @struts2.model.UserType@DOCTOR}">
 <a href="<s:url action="waitingroom"/>">Look for patients</a> 
 </s:if>

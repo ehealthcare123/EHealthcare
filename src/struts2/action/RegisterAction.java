@@ -34,7 +34,7 @@ public class RegisterAction extends ActionSupport {
 	public String execute() {
 //		User in Datenbank speichern
 		dc.insertUser(registername, password, surname, firstname, mail);
-		userlogindata = new UserLoginData(dc.getID(registername), registername, firstname + " " + surname, password, UserType.PATIENT, mail);
+		userlogindata = new UserLoginData(dc.getID(registername), registername, firstname,surname, password, UserType.PATIENT, mail);
 //		Logindaten in Session ablegen
 		ActionContext.getContext().getSession().put("userlogindata", userlogindata);
 		

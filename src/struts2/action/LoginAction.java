@@ -73,11 +73,12 @@ public class LoginAction extends ActionSupport {
 
 //		Integer userid = 1;
 //		
+		
 		if (userid == null || !dc.getPW(userid).equals(this.getPassword())){
 			addActionError("Incorrect login data");
 		}
 		else{
-			UserLoginData uld = new UserLoginData(userid, loginname, dc.getName(userid), dc.getPW(userid), UserType.fromInt(dc.getTyp(userid)), dc.getMail(userid));
+			UserLoginData uld = new UserLoginData(userid, loginname, dc.getName(userid).split(" ")[0], dc.getName(userid).split(" ")[1],dc.getPW(userid), UserType.fromInt(dc.getTyp(userid)), dc.getMail(userid));
 			ActionContext.getContext().getSession().put(
 					"userlogindata", uld);
 			ActionContext.getContext().getSession().put(

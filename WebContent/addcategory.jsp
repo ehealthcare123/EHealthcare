@@ -19,21 +19,16 @@
   </div>
   <div class="main">
     <div class="content">
-      <s:if test="%{#session.userlogindata != null}">
-      <h1>Edit your profile :</h1>
-        <s:form action="profile" method="post">
-	       <s:actionerror/><s:actionmessage/>
-		   <s:password  name="password" label="Password" size="20" />
-		   <s:password  name="password2" label="Reenter Password" size="20" />
-		   <s:textfield name="#session.userlogindata.firstname" label="First Name" size="20" />
-		   <s:textfield name="#session.userlogindata.surname" label="Surname" size="20" />
-		   <s:textfield name="#session.userlogindata.usermail" label="Your E-Mail Address" size="20"  />
-		   <s:submit label="Change profile" align="left" />
+    <s:if test="%{#session.userlogindata != null && #session.userlogindata.usertype == @struts2.model.UserType@ADMIN}">
+      <h1>Add a new medical category to system:</h1>
+        <s:form action="addcategory" method="post">
+	       <s:actionerror/>
+		   <s:textfield name="category" label="Category" size="20" />
+		   <s:submit value="Submit" align="left" />
 	    </s:form>
-	  </s:if>
-  	  <s:else>
-    	<p>Permission denied!</p>
-      </s:else>	    
+	    <p><a href="<s:url value="admin.jsp"/>">Back to menu.</a></p>
+	    <p><s:actionerror/></p>
+	    </s:if>
       <div class="clearer"><span></span></div>
     </div>
 	<jsp:include page="sidenavigator.jsp" />

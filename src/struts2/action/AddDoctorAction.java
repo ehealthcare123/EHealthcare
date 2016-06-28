@@ -35,8 +35,11 @@ public class AddDoctorAction extends ActionSupport {
 	public String execute() {
 //		Doc in Datenbank speichern
 		if(!dc.insertDoc(registername, password, surname, firstname, docspez ,mail)){
-			addActionError("Fehler bei SQL Insert Doctor!");
+			addActionError("error by inserting doctor in SQL!");
 			return INPUT;
+		}
+		else{
+			addActionMessage("doctor account was created successfully!");
 		}
 		return SUCCESS;
 	}
@@ -80,7 +83,6 @@ public class AddDoctorAction extends ActionSupport {
 		if(this.getRegistername() != null && this.getRegistername() != "" && dc.getID(this.getRegistername()) != null){
 			addFieldError("registername", "Doctor already exists. Choose a different user name!");
 		}
-		
 //		
 		if(this.getDocspez() != null && this.getDocspez().equals("-1")){
 			addFieldError("docspez", "Choose a doctor category!");
