@@ -94,7 +94,7 @@ public class ChatHandler {
 				String patientcategory = CategoryMapper.getCategory(sID);
 //				Arzt aus ChatSession-Einträgen entfernen
 				Session doctorSession = ChatSessions.getChatClient(sID);
-				if(doctorSession.isOpen()){
+				if(doctorSession != null && doctorSession.isOpen()){
 //					Doktor als Chatpartner entfernen
 					ChatSessions.removeChatClient(sID);
 //					Patienten über Ende des Chats informieren, Eingabe deaktivieren

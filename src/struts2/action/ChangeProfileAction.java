@@ -14,14 +14,13 @@ import struts2.model.UserType;
 
 import struts2.service.DatabaseConnector2;
 
-@Results({ @Result(name = "success",type="redirectAction" ,location = "changeprofin"), @Result(name = "input", location = "/profile.jsp") })
+@Results({ @Result(name = "success", location="/profile.jsp"), @Result(name = "input", location = "/profile.jsp") })
 public class ChangeProfileAction extends ActionSupport {
-	/**
-	* 
-	*/
-	private static final long serialVersionUID = 224532928379636400L;
 
-	private String registername;
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -7482725988585007603L;
 	private String password;
 	private String password2;
 	private String firstname;
@@ -30,27 +29,20 @@ public class ChangeProfileAction extends ActionSupport {
 	private UserLoginData userlogindata;
 	private DatabaseConnector2 dc;
 
-	public ChangeProfileAction(){
-		userlogindata = (UserLoginData) ActionContext.getContext().getSession().get("userlogindata");
-		registername = userlogindata.getUsername();
-		password = userlogindata.getUserpassword();
-		password2 = userlogindata.getUserpassword();
-		firstname = userlogindata.getFullname().split(" ")[0];
-		surname = userlogindata.getFullname().split(" ")[1];
-		mail = userlogindata.getUsermail();
-		
-	}
 	
-	@Action(value = "changeprofile")
+	@Action(value = "profile")
 	public String execute() {
-		System.out.println("2");
+		this.validatethis();
 //		User in Datenbank ändern
-		if(!dc.updateUser(dc.getID(registername), password, surname, firstname, mail)){
+		if(!dc.updateUser(dc.getID(userlogindata.getUsername()), password, surname, firstname, mail)){
 			addActionError("SQL-Update failed!");
 		}
-		userlogindata = new UserLoginData(dc.getID(registername), registername, firstname + " " + surname, password, UserType.PATIENT, mail);
-//		Logindaten in Session ablegen
-		ActionContext.getContext().getSession().put("userlogindata", userlogindata);
+		else{
+			userlogindata = new UserLoginData(dc.getID(userlogindata.getUsername()), userlogindata.getUsername(), firstname + " " + surname, password, UserType.PATIENT, mail);
+//			Logindaten in Session ablegen
+			ActionContext.getContext().getSession().put("userlogindata", userlogindata);
+			addActionMessage("Your changes has been saved!");
+		}
 		
 		return SUCCESS;
 	}
@@ -59,17 +51,17 @@ public class ChangeProfileAction extends ActionSupport {
 	public String display(){
 		return INPUT;
 	}
-
-	@RequiredStringValidator(message = "Please enter a user name!")
-	@RegexFieldValidator(regex = "^[a-z0-9_-]{3,15}$", message = "This isn't a valid username! Use a-z, 0-9, underscore or hyphen and at least 3 characters and maximum length of 15")
-	public String getRegistername() {
-		return registername;
+	
+	public ChangeProfileAction(){
+		userlogindata = (UserLoginData) ActionContext.getContext().getSession().get("userlogindata");
+		password = userlogindata.getUserpassword();
+		password2 = userlogindata.getUserpassword();
+		firstname = userlogindata.getFullname().split(" ")[0];
+		surname = userlogindata.getFullname().split(" ")[1];
+		mail = userlogindata.getUsermail();
+		dc = new DatabaseConnector2();
 	}
-
-	public void setRegistername(String registername) {
-		this.registername = registername;
-	}
-
+	
 	@RequiredStringValidator(message = "Please enter a password!")
 	public String getPassword() {
 		return password;
@@ -79,18 +71,17 @@ public class ChangeProfileAction extends ActionSupport {
 		this.password = password;
 	}
 
-	@Override
-	public void validate() {
+	private void validatethis() {
 //		Passwortvergleich
 		if (!password.equals(password2)) {
 			addFieldError("password2", "Passwords are different!");
 		}
 		
 //		gibt es den User schon?
-		dc = new DatabaseConnector2();
-		if(dc.getID(this.getRegistername()) != null){
+		if(dc.getID(userlogindata.getUsername()) != null){
 			addFieldError("registername", "User already exists. Choose a different user name!");
 		}
+		System.out.println("2");
 	}
 
 	@RequiredStringValidator(message = "Please reenter your password!")
