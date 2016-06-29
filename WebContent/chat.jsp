@@ -27,6 +27,9 @@
     		<div class="clearer"><span></span></div>
     </div>
 	<jsp:include page="sidenavigator.jsp" />
+	<s:if test="%{#session.userlogindata.usertype == @struts2.model.UserType@DOCTOR}">
+		<jsp:include page="doctorsend.jsp" />
+	</s:if>
 	<div class="clearer"><span></span></div>
   </div>
 </div>

@@ -10,7 +10,6 @@ import com.opensymphony.xwork2.validator.annotations.RegexFieldValidator;
 import com.opensymphony.xwork2.validator.annotations.RequiredStringValidator;
 
 import struts2.model.UserLoginData;
-import struts2.model.UserType;
 
 import struts2.service.DatabaseConnector2;
 
@@ -37,7 +36,7 @@ public class ChangeProfileAction extends ActionSupport {
 			addActionError("SQL-Update failed!");
 		}
 		else{
-			userlogindata = new UserLoginData(dc.getID(userlogindata.getUsername()), userlogindata.getUsername(), firstname , surname, password, UserType.PATIENT, usermail);
+			userlogindata = new UserLoginData(dc.getID(userlogindata.getUsername()), userlogindata.getUsername(), firstname , surname, password, userlogindata.getUsertype(), usermail);
 //			Logindaten in Session ablegen
 			ActionContext.getContext().getSession().put("userlogindata", userlogindata);
 			addActionMessage("Your changes has been saved!");
@@ -48,11 +47,6 @@ public class ChangeProfileAction extends ActionSupport {
 	
 	public ChangeProfileAction(){
 		userlogindata = (UserLoginData) ActionContext.getContext().getSession().get("userlogindata");
-		password = userlogindata.getUserpassword();
-		password2 = userlogindata.getUserpassword();
-		firstname = userlogindata.getFirstname();
-		surname = userlogindata.getSurname();
-		usermail = userlogindata.getUsermail();
 		dc = new DatabaseConnector2();
 	}
 	
@@ -71,12 +65,6 @@ public class ChangeProfileAction extends ActionSupport {
 		if (!password.equals(password2)) {
 			addFieldError("password2", "Passwords are different!");
 		}
-		
-//		gibt es den User schon?
-		if(dc.getID(userlogindata.getUsername()) != null){
-			addFieldError("registername", "User already exists. Choose a different user name!");
-		}
-		this.execute();
 	}
 
 	@RequiredStringValidator(message = "Please reenter your password!")
@@ -110,11 +98,11 @@ public class ChangeProfileAction extends ActionSupport {
 
 	@RequiredStringValidator(message = "E-Mail address is needed to send you receipts")
 	@RegexFieldValidator(regex = "^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$", message = "This is no valid E-Mail-Address!")
-	public String getMail() {
+	public String getUsermail() {
 		return usermail;
 	}
 
-	public void setMail(String mail) {
-		this.usermail = mail;
+	public void setUsermail(String usermail) {
+		this.usermail = usermail;
 	}
 }

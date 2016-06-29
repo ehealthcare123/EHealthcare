@@ -8,10 +8,10 @@ import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.ActionSupport;
 import com.opensymphony.xwork2.validator.annotations.*;
 
+import struts2.chatmapping.SessionMapper;
 import struts2.model.UserLoginData;
 import struts2.model.UserType;
 import struts2.service.DatabaseConnector2;
-import struts2.service.SessionMapper;
 
 @Results({ 
 	@Result(name = "patient",type="redirectAction" ,location = "prechoosedoc"), 

@@ -7,8 +7,8 @@ import org.apache.struts2.convention.annotation.Results;
 import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.ActionSupport;
 
+import struts2.chatmapping.SessionMapper;
 import struts2.model.UserLoginData;
-import struts2.service.SessionMapper;
 
 @Results({ @Result(name = "success", location = "/index.jsp")
 	})

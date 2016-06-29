@@ -359,7 +359,6 @@ public class DatabaseConnector2
 	public boolean updateUser(Integer id, String password, String surname, String firstname, String mail) {
 	    String sql = "UPDATE BENUTZER SET PASSWORT='"+ password +"', NAME='"+ surname +"', VORNAME='"+ firstname +"', MAIL='"+ mail +"' "+
 		             "WHERE ID="+id.toString();
-	    System.out.println("1");
 		return this.executeStatement(sql);
 	}
 }

@@ -17,6 +17,10 @@ import javax.websocket.server.ServerEndpoint;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import struts2.chatmapping.CategoryMapper;
+import struts2.chatmapping.ChatSessions;
+import struts2.chatmapping.SessionMapper;
+import struts2.chatmapping.WaitingQueueCategory;
 import struts2.model.UserLoginData;
 import struts2.model.UserType;
 
@@ -50,6 +54,9 @@ public class ChatHandler {
 				ChatSessions.addChatClient(sID, patientSession);
 //				und umgekehrt
 				ChatSessions.addChatClient(patientID,session);
+				
+//				PatientID mit DoktorID verknüpfen
+				PatientSession.addPatient(sID, patientID);
 				
 //				Patient wird aus der Warteschlange für die jeweilige Kategorie genommen
 				WaitingQueueCategory.removePatient(wantedCategory, patientSession);
@@ -108,11 +115,10 @@ public class ChatHandler {
 						e.printStackTrace();
 					}
 				}
-//				Patient wird aus der Warteschlange für die jeweilige Kategorie genommen
-				if(ChatSessions.getChatClient(sID) == null){
-					WaitingQueueCategory.removePatient(patientcategory, session);					
-				}
-				
+				else if (CategoryMapper.getCategory(sID) != null){
+	//				Patient wird aus der Warteschlange für die jeweilige Kategorie genommen, falls noch kein Chat gestartet wurde
+					WaitingQueueCategory.removePatient(patientcategory, session);										
+				}				
 				System.out.println("patient "+session.toString()+" was removed from category '"+ patientcategory + "'");
 			}
 			else if(uld.getUsertype() == UserType.DOCTOR){
@@ -130,7 +136,6 @@ public class ChatHandler {
 					} catch (JSONException | IOException e) {
 					}					
 				}
-				
 			}
 			else{
 				System.out.println("Some other user exited the chat room");

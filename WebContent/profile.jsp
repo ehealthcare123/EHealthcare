@@ -23,12 +23,12 @@
       <h1>Edit your profile :</h1>
         <s:form action="profile" method="post">
 	       <s:actionerror/><s:actionmessage/>
-		   <s:password  name="password" label="Password" size="20" />
-		   <s:password  name="password2" label="Reenter Password" size="20" />
-		   <s:textfield name="#session.userlogindata.firstname" label="First Name" size="20" />
-		   <s:textfield name="#session.userlogindata.surname" label="Surname" size="20" />
-		   <s:textfield name="#session.userlogindata.usermail" label="Your E-Mail Address" size="20"  />
-		   <s:submit label="Change profile" align="left" />
+		   <s:password  name="password" value="%{#session.userlogindata.userpassword}" label="Password" size="20" />
+		   <s:password  name="password2" value="%{#session.userlogindata.userpassword}" label="Reenter Password" size="20" />
+		   <s:textfield name="firstname" value="%{#session.userlogindata.firstname}" label="First Name" size="20" />
+		   <s:textfield name="surname" value="%{#session.userlogindata.surname}" label="Surname" size="20" />
+		   <s:textfield name="usermail" value="%{#session.userlogindata.usermail}" label="Your E-Mail Address" size="20"  />
+		   <s:submit value="Change profile" align="left" />
 	    </s:form>
 	  </s:if>
   	  <s:else>

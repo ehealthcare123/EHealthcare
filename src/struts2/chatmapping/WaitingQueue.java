@@ -1,4 +1,4 @@
-package struts2.service;
+package struts2.chatmapping;
 
 import java.util.ArrayList;
 
