@@ -17,11 +17,11 @@
     <jsp:include page="navigation.jsp" />
   </div>
   <div class="main">
-	 <div class="content">
+	 <div class="chatcontent">
 	 		<div id="waitingElements">Please wait a few moments. A doctor will care for you soon.</div>
 		    <div id="chatControls" style="display:none">
-		        <input id="message" placeholder="Type your message">
-		        <button id="send">Send</button>
+		        <input id="message" placeholder="Type your message" size="40">
+		        <button id="send">Send message</button>
 		    </div>
 			<div id="chat" style="display:none"> <!-- Built by JS --> </div>
     		<div class="clearer"><span></span></div>

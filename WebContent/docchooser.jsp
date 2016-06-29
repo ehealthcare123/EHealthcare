@@ -23,7 +23,7 @@
       <h1>Please choose a doctor you need:</h1>
 	  <s:form action="choosedoc" method="post">
 		 <s:select name="yourcategory" list="doccategory" value="defaultDoccategory" />
-		 <s:submit value="Go into the waiting room!" align="left"/>
+		 <s:submit value="Request a doctor" align="left"/>
 	  </s:form>
 	  </s:if>
       <div class="clearer"><span></span></div>

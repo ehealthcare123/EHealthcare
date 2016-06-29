@@ -169,6 +169,14 @@ h1,h2,h3 {
 	margin-left: 18px;
 }
 
+/* chatcontent */
+.chatcontent {
+	float: left;
+	margin-right: 6%;
+	width: 69%;
+    min-height: 250px;
+}
+
 /* search form */
 .styled {
 	border: 3px double #E5E5E5;

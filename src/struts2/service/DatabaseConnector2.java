@@ -105,19 +105,19 @@ public class DatabaseConnector2
 	
 	public boolean insertUser(String login, String pw, String name, String vorname, String mail)
 	{
-		return insertUser(login,pw,name,vorname,3,mail,0);
+		return insertUser(login,pw,name,vorname,2,mail,0);
 	}
 
 	public boolean insertAdmin(String login, String pw, String name, String vorname, String mail)
 	{
-		return insertUser(login,pw,name,vorname,1, mail,0);
+		return insertUser(login,pw,name,vorname,0, mail,0);
 	}
 
 	public boolean insertDoc(String login, String pw, String name, String vorname, String spez, String mail)
 	{
 		int s = getSpezNumber(spez);
 		if(s>0)
-			return insertUser(login,pw,name,vorname,2, mail,s);
+			return insertUser(login,pw,name,vorname,1, mail,s);
 		return false;
 	}
 	
