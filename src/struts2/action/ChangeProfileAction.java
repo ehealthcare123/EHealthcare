@@ -9,6 +9,8 @@ import com.opensymphony.xwork2.ActionSupport;
 import com.opensymphony.xwork2.validator.annotations.RegexFieldValidator;
 import com.opensymphony.xwork2.validator.annotations.RequiredStringValidator;
 
+import struts2.chatmapping.CategoryMapper;
+import struts2.chatmapping.SessionMapper;
 import struts2.model.UserLoginData;
 
 import struts2.service.DatabaseConnector2;
@@ -39,6 +41,7 @@ public class ChangeProfileAction extends ActionSupport {
 			userlogindata = new UserLoginData(dc.getID(userlogindata.getUsername()), userlogindata.getUsername(), firstname , surname, password, userlogindata.getUsertype(), usermail);
 //			Logindaten in Session ablegen
 			ActionContext.getContext().getSession().put("userlogindata", userlogindata);
+			SessionMapper.addSession(userlogindata.hashCode(), userlogindata);
 			addActionMessage("Your changes has been saved!");
 		}
 		
@@ -97,7 +100,7 @@ public class ChangeProfileAction extends ActionSupport {
 	}
 
 	@RequiredStringValidator(message = "E-Mail address is needed to send you receipts")
-	@RegexFieldValidator(regex = "^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$", message = "This is no valid E-Mail-Address!")
+	@RegexFieldValidator(regex = "^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-]+(\\.[A-Za-z0-9-]+)*(\\.[A-Za-z]{2,})$", message = "This is no valid E-Mail-Address!")
 	public String getUsermail() {
 		return usermail;
 	}
